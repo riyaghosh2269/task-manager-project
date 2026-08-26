@@ -5,27 +5,26 @@ import {
   type FormEvent,
 } from "react";
 
-import type { Task } from "../types/Tasks";
+import { useTasks } from "../context/TaskContext";
 
-interface TaskFormProps {
-  editingTask: Task | null;
-  onSaveTask: (title: string, description: string) => void;
-  onCancelEdit: () => void;
-}
+const TaskForm = () => {
+  const {
+    editingTask,
+    addOrUpdateTask,
+    cancelEdit,
+  } = useTasks();
 
-const TaskForm = ({
-  editingTask,
-  onSaveTask,
-  onCancelEdit,
-}: TaskFormProps) => {
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [description, setDescription] =
+    useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (editingTask) {
       setTitle(editingTask.title);
-      setDescription(editingTask.description);
+      setDescription(
+        editingTask.description
+      );
     } else {
       setTitle("");
       setDescription("");
@@ -51,14 +50,20 @@ const TaskForm = ({
     event.preventDefault();
 
     const cleanTitle = title.trim();
-    const cleanDescription = description.trim();
+    const cleanDescription =
+      description.trim();
 
     if (cleanTitle === "") {
-      setError("Task title cannot be empty.");
+      setError(
+        "Task title cannot be empty."
+      );
       return;
     }
 
-    onSaveTask(cleanTitle, cleanDescription);
+    addOrUpdateTask(
+      cleanTitle,
+      cleanDescription
+    );
 
     setTitle("");
     setDescription("");
@@ -66,11 +71,20 @@ const TaskForm = ({
   };
 
   return (
-    <form className="task-form" onSubmit={handleSubmit}>
-      <h2>{editingTask ? "Edit Task" : "Add New Task"}</h2>
+    <form
+      className="task-form"
+      onSubmit={handleSubmit}
+    >
+      <h2>
+        {editingTask
+          ? "Edit Task"
+          : "Add New Task"}
+      </h2>
 
       <div className="form-group">
-        <label htmlFor="title">Task Title</label>
+        <label htmlFor="title">
+          Task Title
+        </label>
 
         <input
           id="title"
@@ -82,29 +96,42 @@ const TaskForm = ({
       </div>
 
       <div className="form-group">
-        <label htmlFor="description">Description</label>
+        <label htmlFor="description">
+          Description
+        </label>
 
         <textarea
           id="description"
           placeholder="Enter task description"
           value={description}
-          onChange={handleDescriptionChange}
+          onChange={
+            handleDescriptionChange
+          }
           rows={4}
         />
       </div>
 
-      {error && <p className="error-message">{error}</p>}
+      {error && (
+        <p className="error-message">
+          {error}
+        </p>
+      )}
 
       <div className="form-buttons">
-        <button type="submit" className="add-button">
-          {editingTask ? "Update Task" : "Add Task"}
+        <button
+          type="submit"
+          className="add-button"
+        >
+          {editingTask
+            ? "Update Task"
+            : "Add Task"}
         </button>
 
         {editingTask && (
           <button
             type="button"
             className="cancel-button"
-            onClick={onCancelEdit}
+            onClick={cancelEdit}
           >
             Cancel
           </button>

@@ -1,18 +1,20 @@
 import type { Task } from "../types/Tasks";
 
+import { useTasks } from "../context/TaskContext";
+
 interface TaskItemProps {
   task: Task;
-  onToggleTask: (id: number) => void;
-  onDeleteTask: (id: number) => void;
-  onEditTask: (task: Task) => void;
 }
 
 const TaskItem = ({
   task,
-  onToggleTask,
-  onDeleteTask,
-  onEditTask,
 }: TaskItemProps) => {
+  const {
+    toggleTask,
+    deleteTask,
+    editTask,
+  } = useTasks();
+
   return (
     <div
       className={
@@ -25,7 +27,9 @@ const TaskItem = ({
         <input
           type="checkbox"
           checked={task.completed}
-          onChange={() => onToggleTask(task.id)}
+          onChange={() =>
+            toggleTask(task.id)
+          }
         />
 
         <div className="task-information">
@@ -42,7 +46,9 @@ const TaskItem = ({
                 : "status pending-status"
             }
           >
-            {task.completed ? "Completed" : "Pending"}
+            {task.completed
+              ? "Completed"
+              : "Pending"}
           </span>
         </div>
       </div>
@@ -50,14 +56,16 @@ const TaskItem = ({
       <div className="task-buttons">
         <button
           className="edit-button"
-          onClick={() => onEditTask(task)}
+          onClick={() => editTask(task)}
         >
           Edit
         </button>
 
         <button
           className="delete-button"
-          onClick={() => onDeleteTask(task.id)}
+          onClick={() =>
+            deleteTask(task.id)
+          }
         >
           Delete
         </button>
