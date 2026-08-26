@@ -1,6 +1,7 @@
 import type { Task } from "../types/Tasks";
 
 import { useTasks } from "../context/TaskContext";
+import { cn } from "../utils/cn.ts";
 
 interface TaskItemProps {
   task: Task;
@@ -17,13 +18,11 @@ const TaskItem = ({
 
   return (
     <div
-      className={
-        task.completed
-          ? "task-item completed-task"
-          : "task-item"
+      className={cn(``, { 'task-item completed-task': task.completed, 'task-item': !task.completed })
+
       }
     >
-      <div className="task-left">
+      <div className={cn(`task-left`)}>
         <input
           type="checkbox"
           checked={task.completed}
@@ -32,7 +31,7 @@ const TaskItem = ({
           }
         />
 
-        <div className="task-information">
+        <div className={cn(`task-information`)}>
           <h3>{task.title}</h3>
 
           {task.description && (
@@ -40,10 +39,8 @@ const TaskItem = ({
           )}
 
           <span
-            className={
-              task.completed
-                ? "status completed-status"
-                : "status pending-status"
+            className={cn(``,{"status completed-status":task.completed,"status pendiing-status":!task.completed})
+
             }
           >
             {task.completed
@@ -53,7 +50,7 @@ const TaskItem = ({
         </div>
       </div>
 
-      <div className="task-buttons">
+      <div className={cn(`task-buttons`)}>
         <button
           className="edit-button"
           onClick={() => editTask(task)}
@@ -62,7 +59,7 @@ const TaskItem = ({
         </button>
 
         <button
-          className="delete-button"
+          className={cn(`delete-button`)}
           onClick={() =>
             deleteTask(task.id)
           }

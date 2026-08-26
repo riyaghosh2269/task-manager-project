@@ -6,6 +6,7 @@ import {
 } from "react";
 
 import { useTasks } from "../context/TaskContext";
+import { cn } from "../utils/cn.ts";
 
 const TaskForm = () => {
   const {
@@ -72,7 +73,7 @@ const TaskForm = () => {
 
   return (
     <form
-      className="task-form"
+      className={cn(`task-form`)}
       onSubmit={handleSubmit}
     >
       <h2>
@@ -81,7 +82,7 @@ const TaskForm = () => {
           : "Add New Task"}
       </h2>
 
-      <div className="form-group">
+      <div className={cn(`form-group`)}>
         <label htmlFor="title">
           Task Title
         </label>
@@ -95,7 +96,7 @@ const TaskForm = () => {
         />
       </div>
 
-      <div className="form-group">
+      <div className={cn(`form-group`)}>
         <label htmlFor="description">
           Description
         </label>
@@ -112,15 +113,15 @@ const TaskForm = () => {
       </div>
 
       {error && (
-        <p className="error-message">
+        <p className={cn(`error-message`)}>
           {error}
         </p>
       )}
 
-      <div className="form-buttons">
+      <div className={cn(`form-buttons`)}>
         <button
           type="submit"
-          className="add-button"
+          className={cn(`add-button`)}
         >
           {editingTask
             ? "Update Task"
@@ -130,7 +131,7 @@ const TaskForm = () => {
         {editingTask && (
           <button
             type="button"
-            className="cancel-button"
+            className={cn(`cancel-button`)}
             onClick={cancelEdit}
           >
             Cancel

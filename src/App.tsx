@@ -4,6 +4,7 @@ import TaskList from "./components/TaskList";
 import { useTasks } from "./context/TaskContext";
 
 import "./App.css";
+import { cn } from "./utils/cn";
 
 function App() {
   const {
@@ -15,10 +16,10 @@ function App() {
   } = useTasks();
 
   return (
-    <main className="app">
-      <div className="task-manager">
-        <header className="header">
-          <p className="small-heading">
+    <main className={cn(`app`)}>
+      <div className={cn(`task-manager`)}>
+        <header className={cn(`header`)}>
+          <p className={cn(`small-heading`)}>
             React + TypeScript
           </p>
 
@@ -30,18 +31,18 @@ function App() {
           </p>
         </header>
 
-        <div className="statistics">
-          <div className="stat-card">
+        <div className={cn(`statistics`)}>
+          <div className={cn(`stat-card`)}>
             <p>Total</p>
             <h2>{tasks.length}</h2>
           </div>
 
-          <div className="stat-card">
+          <div className={cn(`stat-card`)}>
             <p>Pending</p>
             <h2>{pendingTasks}</h2>
           </div>
 
-          <div className="stat-card">
+          <div className={cn(`stat-card`)}>
             <p>Completed</p>
             <h2>{completedTasks}</h2>
           </div>
@@ -49,23 +50,17 @@ function App() {
 
         <TaskForm />
 
-        <div className="filter-section">
+        <div className={cn(`filter-section`)}>
           <button
-            className={
-              filter === "all"
-                ? "filter-button selected-filter"
-                : "filter-button"
-            }
+            className={cn(``,{"filter-button selected-filter":filter==="all","filter-button":filter!=="all"})}
             onClick={() => setFilter("all")}
           >
             All
           </button>
 
           <button
-            className={
-              filter === "pending"
-                ? "filter-button selected-filter"
-                : "filter-button"
+            className={cn(``,{"filter-button selected-filter":filter==="pending","filter-button":filter!=="pending"})
+
             }
             onClick={() => setFilter("pending")}
           >
@@ -73,10 +68,8 @@ function App() {
           </button>
 
           <button
-            className={
-              filter === "completed"
-                ? "filter-button selected-filter"
-                : "filter-button"
+            className={cn(``,{"filter-button selected-filter":filter==="completed","filter-button":filter!=="completed"})
+             
             }
             onClick={() =>
               setFilter("completed")
