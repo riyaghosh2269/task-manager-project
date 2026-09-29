@@ -1,8 +1,15 @@
 import "./App.css";
-import Agreement from "./components/Agreement";
+import IdCard from "./components/IdCard";
 
 function App() {
-  return <Agreement />;
+  return (
+    <IdCard
+      employeeId="SR_21212121"
+      joiningDate={new Date(Date.now())}
+      name="Renuka Khatun"
+      emergencyContact="32323223"
+    />
+  );
 }
 
 export default App;
