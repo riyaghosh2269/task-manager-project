@@ -1,3 +1,8 @@
+
+import { useRef, useState } from "react";
+import { toPng } from "html-to-image";
+import jsPDF from "jspdf";
+
 export default function IdCard({
   name,
   employeeId,
@@ -9,19 +14,68 @@ export default function IdCard({
   joiningDate: Date;
   emergencyContact?: string;
 }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
   const formattedJoiningDate = new Intl.DateTimeFormat("en-GB", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
   }).format(new Date(joiningDate));
 
+  const handleDownloadPdf = async () => {
+    if (!cardRef.current || isDownloading) return;
+
+    try {
+      setIsDownloading(true);
+
+      await document.fonts.ready;
+
+      const imageData = await toPng(cardRef.current, {
+        pixelRatio: 3,
+        cacheBust: true,
+        backgroundColor: "#ffffff",
+      });
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: [53.98, 85.6],
+        compress: true,
+      });
+
+      pdf.addImage(
+        imageData,
+        "PNG",
+        0,
+        0,
+        53.98,
+        85.6,
+      );
+
+      pdf.save(`ID-Card-${employeeId}.pdf`);
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+      alert("Failed to download ID card. Please try again.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center p-6 print:p-0">
-      <div className="relative h-[85.6mm] w-[53.98mm] overflow-hidden border border-neutral-300 bg-white font-sans text-neutral-950 shadow-2xl print:border-0 print:shadow-none">
+    <div className="flex flex-col items-center justify-center gap-5 p-6 print:p-0">
+      {/* ID Card */}
+      <div
+        ref={cardRef}
+        className="relative h-[85.6mm] w-[53.98mm] overflow-hidden border border-neutral-300 bg-white font-sans text-neutral-950 shadow-2xl print:border-0 print:shadow-none"
+      >
         {/* Background */}
         <div className="absolute left-0 top-[13mm] h-[23mm] w-[34mm] bg-gradient-to-br from-amber-400 to-orange-500 [clip-path:polygon(0_0,100%_55%,62%_100%,0_64%)]" />
+
         <div className="absolute right-0 top-[13mm] h-[23mm] w-[34mm] bg-gradient-to-bl from-orange-500 to-amber-400 [clip-path:polygon(0_55%,100%_0,100%_64%,38%_100%)]" />
+
         <div className="absolute bottom-0 left-0 h-[5mm] w-[70%] bg-gradient-to-r from-orange-500 to-amber-400 [clip-path:polygon(0_30%,100%_0,92%_100%,0_100%)]" />
+
         <div className="absolute bottom-0 right-0 h-[5mm] w-[45%] bg-gradient-to-l from-amber-300 to-orange-400 [clip-path:polygon(12%_0,100%_25%,100%_100%,0_100%)]" />
 
         <div className="relative z-10 flex h-full flex-col items-center px-[4mm] pt-[3.5mm]">
@@ -75,18 +129,34 @@ export default function IdCard({
             </h1>
           </div>
 
-          {/* Employee Details - moved upward */}
+          {/* Employee Details */}
           <div className="mt-[-0.8mm] w-full translate-x-[2mm] px-[1mm]">
             <div className="grid grid-cols-[18mm_2.5mm_1fr] items-center text-[2.55mm] leading-[1.15]">
-              <span className="font-bold">Employee ID</span>
-              <span className="text-center font-bold">:</span>
-              <span className="font-extrabold">{employeeId}</span>
+              <span className="font-bold">
+                Employee ID
+              </span>
+
+              <span className="text-center font-bold">
+                :
+              </span>
+
+              <span className="font-extrabold">
+                {employeeId}
+              </span>
             </div>
 
             <div className="mt-[1.3mm] grid grid-cols-[18mm_2.5mm_1fr] items-center text-[2.55mm] leading-[1.15]">
-              <span className="font-bold">Joining Date</span>
-              <span className="text-center font-bold">:</span>
-              <span className="font-extrabold">{formattedJoiningDate}</span>
+              <span className="font-bold">
+                Joining Date
+              </span>
+
+              <span className="text-center font-bold">
+                :
+              </span>
+
+              <span className="font-extrabold">
+                {formattedJoiningDate}
+              </span>
             </div>
 
             {emergencyContact && (
@@ -97,7 +167,9 @@ export default function IdCard({
                   Contact
                 </span>
 
-                <span className="text-center font-bold">:</span>
+                <span className="text-center font-bold">
+                  :
+                </span>
 
                 <span className="font-extrabold tracking-[0.1mm]">
                   {emergencyContact}
@@ -110,6 +182,18 @@ export default function IdCard({
         {/* Inner Border */}
         <div className="pointer-events-none absolute inset-[1.2mm] border border-amber-500/35" />
       </div>
+
+      {/* Download PDF Button */}
+      <button
+        type="button"
+        onClick={handleDownloadPdf}
+        disabled={isDownloading}
+        className="flex items-center justify-center rounded-lg bg-amber-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-60 print:hidden"
+      >
+        {isDownloading
+          ? "Generating PDF..."
+          : "Download ID Card"}
+      </button>
     </div>
   );
 }
